@@ -51,3 +51,8 @@ func TestForLoop(t *testing.T) {
 }
 
 ```
+The result
+
+![image](https://user-images.githubusercontent.com/20734293/113982275-25f2ca80-987b-11eb-8935-42e5af4f4f89.png)
+
+			count++
