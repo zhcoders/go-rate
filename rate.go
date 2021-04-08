@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+// following the source code
+// https://github.com/beefsack/go-rate
 type RateLimiter struct {
 	limit    int
 	interval time.Duration
@@ -42,15 +44,15 @@ func (r *RateLimiter) Try() (ok bool) {
 	return true
 }
 
-type MyRateLimiter struct {
+type MutexRateLimiter struct {
 	limit    int
 	interval time.Duration
 	count    int
 	mtx      sync.Mutex
 }
 
-func NewRateLimiter(limit int, interval time.Duration) *MyRateLimiter {
-	lim := &MyRateLimiter{
+func NewMutexRateLimiter(limit int, interval time.Duration) *MutexRateLimiter {
+	lim := &MutexRateLimiter{
 		limit:    limit,
 		interval: interval,
 		count:    limit,
@@ -75,7 +77,7 @@ func NewRateLimiter(limit int, interval time.Duration) *MyRateLimiter {
 	return lim
 }
 
-func (m *MyRateLimiter) Try() (ok bool) {
+func (m *MutexRateLimiter) Try() (ok bool) {
 	m.mtx.Lock()
 	defer m.mtx.Unlock()
 	if m.count > 0 {
@@ -88,7 +90,7 @@ func (m *MyRateLimiter) Try() (ok bool) {
 type ChanRateLimiter struct {
 	limit    int
 	interval time.Duration
-	ch chan struct{}
+	ch       chan struct{}
 }
 
 func NewChanRateLimiter(limit int, interval time.Duration) *ChanRateLimiter {
@@ -99,7 +101,7 @@ func NewChanRateLimiter(limit int, interval time.Duration) *ChanRateLimiter {
 	}
 
 	for i := 0; i < lim.limit; i++ {
-		lim.ch <- struct {}{}
+		lim.ch <- struct{}{}
 	}
 
 	go func() {
