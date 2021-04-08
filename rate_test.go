@@ -23,7 +23,7 @@ func TestRateLimiter(t *testing.T) {
 func TestMyRateLimiter(t *testing.T) {
 	limit := 5
 	interval := time.Millisecond
-	limiter := NewRateLimiter(limit, interval)
+	limiter := NewMutexRateLimiter(limit, interval)
 	count := 0
 	for i := 0; i < 100000000; i++ {
 		ok := limiter.Try()
